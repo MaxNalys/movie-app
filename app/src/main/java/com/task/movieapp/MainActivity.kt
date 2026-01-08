@@ -1,94 +1,60 @@
 package com.task.movieapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import com.task.designsystem.theme.MovieAppTheme
+import com.task.data.repository.MovieRepository
+import dagger.hilt.android.AndroidEntryPoint
+import jakarta.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var movieRepository: MovieRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MovieAppTheme {
-                MovieAppApp()
+            Greeting("Android")
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val trending = movieRepository.getTrendingMovies(page = 1)
+                Log.d("API_TEST", "Trending movies: ${trending.size} items")
+                trending.forEach {
+                    Log.d("API_TEST", "Movie: ${it.title}, genres: ${it.genreIds}")
+                }
+
+                val popular = movieRepository.getPopularMovies(page = 1)
+                Log.d("API_TEST", "Popular movies: ${popular.size} items")
+
+                val genres = movieRepository.getGenres()
+                Log.d("API_TEST", "Genres: ${genres.map { it.name }}")
+            } catch (e: Exception) {
+                Log.e("API_TEST", "Error fetching API: ${e.message}")
             }
         }
     }
 }
 
-@PreviewScreenSizes
 @Composable
-fun MovieAppApp() {
-    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
-
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            AppDestinations.entries.forEach {
-                item(
-                    icon = {
-                        Icon(
-                            it.icon,
-                            contentDescription = it.label
-                        )
-                    },
-                    label = { Text(it.label) },
-                    selected = it == currentDestination,
-                    onClick = { currentDestination = it }
-                )
-            }
-        }
-    ) {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            Greeting(
-                name = "Android",
-                modifier = Modifier.padding(innerPadding)
-            )
-        }
-    }
+fun Greeting(name: String) {
+    Text(text = "Hello $name!")
 }
 
-enum class AppDestinations(
-    val label: String,
-    val icon: ImageVector,
-) {
-    HOME("Home", Icons.Default.Home),
-    FAVORITES("Favorites", Icons.Default.Favorite),
-    PROFILE("Profile", Icons.Default.AccountBox),
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun GreetingPreview() {
-    MovieAppTheme {
-        Greeting("Android")
-    }
+    Greeting("Android")
 }
