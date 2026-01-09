@@ -30,7 +30,7 @@ fun MoviesScreen(
                 Column(
                     Modifier
                         .fillMaxSize()
-                        .padding(16.dp)
+                        .padding(32.dp)
                 ) {
                     MoviesSection(
                         title = "Trending",

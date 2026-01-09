@@ -47,6 +47,7 @@ fun MovieDetailCard(
     ) {
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(LARGE_PADDING)
         ) {

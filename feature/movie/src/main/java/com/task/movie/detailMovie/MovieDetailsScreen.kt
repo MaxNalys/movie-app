@@ -51,6 +51,7 @@ fun MovieDetailsScreen(
                     voteCount = state.movie.voteCount,
                     genres = genreNames,
                     onCardClick = {} // або {}
+
                 )
                 IconButton(
                     onClick = {

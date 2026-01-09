@@ -67,7 +67,8 @@ fun NavGraphBuilder.composableMoviesRoute(
             type = type,
             onMovieClick = { movieId ->
                 navController.navigateToMovieDetails(movieId)
-            }
+            },
+            onBack = { navController.popBackStack() }
         )
     }
 
