@@ -22,6 +22,9 @@ class DefaultMovieRepository @Inject constructor(
             .results
             .map { it.toDomain() }
 
+    override suspend fun getMovieDetails(movieId: Int): Movie =
+        api.getMovieDetails(movieId).toDomain()
+
     override suspend fun getGenres(): List<Genre> =
         api.getGenres()
             .genres

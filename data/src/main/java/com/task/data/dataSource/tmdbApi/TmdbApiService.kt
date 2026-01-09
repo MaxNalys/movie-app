@@ -1,6 +1,7 @@
 package com.task.data.dataSource.tmdbApi
 
 import com.task.data.dataSource.tmdbApi.model.GenreResponse
+import com.task.data.dataSource.tmdbApi.model.MovieDto
 import com.task.data.dataSource.tmdbApi.model.MovieResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -21,4 +22,9 @@ interface TmdbApiService {
 
     @GET("genre/movie/list")
     suspend fun getGenres(): GenreResponse
+
+    @GET("movie/{movie_id}")
+    suspend fun getMovieDetails(
+        @Path("movie_id") movieId: Int
+    ): MovieDto
 }

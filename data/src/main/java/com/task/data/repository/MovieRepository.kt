@@ -10,5 +10,7 @@ interface MovieRepository {
 
     suspend fun getPopularMovies(page: Int): List<Movie>
 
+    suspend fun getMovieDetails(movieId: Int): Movie
+
     suspend fun getGenres(): List<Genre>
 }

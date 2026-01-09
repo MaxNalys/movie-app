@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.task.designsystem.constants.Elevations.CARD_ELEVATION
 import com.task.designsystem.constants.Paddings.LARGE_PADDING
@@ -24,19 +25,24 @@ import com.task.designsystem.theme.MovieAppTheme
 
 @Composable
 fun MovieCard(
-    posterUrl: String,
+    posterPath: String,
     title: String,
-    director: String,
     year: String,
     rating: Float,
     modifier: Modifier = Modifier,
     onMovieClick: () -> Unit
 ) {
+    val posterUrl = if (posterPath.isNotEmpty()) {
+        "https://image.tmdb.org/t/p/w300$posterPath"
+    } else {
+        ""
+    }
+
     Card(
         shape = CARD_SHAPE,
         elevation = CardDefaults.cardElevation(CARD_ELEVATION),
         modifier = modifier
-            .fillMaxWidth()
+            .width(300.dp)
             .clickable { onMovieClick() }
     ) {
         Column(
@@ -49,6 +55,7 @@ fun MovieCard(
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(250.dp)
                     .aspectRatio(IMAGE_RATIO)
                     .clip(CARD_SHAPE)
             )
@@ -63,21 +70,16 @@ fun MovieCard(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
-                    maxLines = 2,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f)
                 )
 
+
                 Spacer(modifier = Modifier.width(SMALL_PADDING))
 
-                Text(
-                    text = director,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+
             }
 
             Spacer(modifier = Modifier.height(SMALL_PADDING))
@@ -121,9 +123,8 @@ fun MovieCard(
 fun MovieCardPreview() {
     MovieAppTheme {
         MovieCard(
-            posterUrl = "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDI5LWFmNTEtODM1ZTI2ZDJmZjBhXkEyXkFqcGdeQXVyNDYyMDk5MTU@._V1_FMjpg_UX1000_.jpg",
+            posterPath = "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDI5LWFmNTEtODM1ZTI2ZDJmZjBhXkEyXkFqcGdeQXVyNDYyMDk5MTU@._V1_FMjpg_UX1000_.jpg",
             title = "The Matrix",
-            director = "The Wachowskis",
             year = "1999",
             rating = 4.5f,
             onMovieClick = {}

@@ -3,8 +3,7 @@ package com.task.ui.cards
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,7 +23,7 @@ import com.task.designsystem.theme.MovieAppTheme
 
 @Composable
 fun MovieDetailCard(
-    posterUrl: String,
+    posterPath: String,
     title: String,
     releaseDate: String,
     genres: List<String>,
@@ -34,11 +33,16 @@ fun MovieDetailCard(
     modifier: Modifier = Modifier,
     onCardClick: () -> Unit
 ) {
+    val posterUrl = if (posterPath.isNotEmpty()) {
+        "https://image.tmdb.org/t/p/w300$posterPath"
+    } else {
+        ""
+    }
     Card(
         shape = CARD_SHAPE,
         elevation = CardDefaults.cardElevation(defaultElevation = Elevations.CARD_ELEVATION),
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .clickable { onCardClick() }
     ) {
         Column(
@@ -82,8 +86,13 @@ fun MovieDetailCard(
 
             Spacer(modifier = Modifier.height(SMALL_PADDING))
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-                genres.forEach { genre ->
+
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(genres.size) { index ->
+                    val genre = genres[index]
                     Text(
                         text = genre,
                         style = MaterialTheme.typography.labelSmall,
@@ -94,12 +103,10 @@ fun MovieDetailCard(
                                 shape = CARD_SHAPE
                             )
                             .padding(horizontal = SMALL_PADDING, vertical = TINY_PADDING)
-                            .padding(end = SMALL_PADDING)
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.height(MEDIUM_PADDING))
+            Spacer(modifier = Modifier.height(SMALL_PADDING))
 
             Text(
                 text = overview,
@@ -111,28 +118,7 @@ fun MovieDetailCard(
 
             Spacer(modifier = Modifier.height(MEDIUM_PADDING))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                val fullStars = rating.toInt()
-                val halfStar = (rating % 1 >= 0.5f)
-                repeat(fullStars) {
-                    Icon(
-                        imageVector = Icons.Filled.Star,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-                if (halfStar) {
-                    Icon(
-                        imageVector = Icons.Filled.Star,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(SMALL_PADDING))
+            Spacer(modifier = Modifier.width(SMALL_PADDING))
 
                 Text(
                     text = "($voteCount votes)",
@@ -142,14 +128,14 @@ fun MovieDetailCard(
             }
         }
     }
-}
+
 
 @Preview(showBackground = true)
 @Composable
 fun MovieDetailCardPreview() {
     MovieAppTheme {
         MovieDetailCard(
-            posterUrl = "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDI5LWFmNTEtODM1ZTI2ZDJmZjBhXkEyXkFqcGdeQXVyNDYyMDk5MTU@._V1_FMjpg_UX1000_.jpg",
+            posterPath = "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDI5LWFmNTEtODM1ZTI2ZDJmZjBhXkEyXkFqcGdeQXVyNDYyMDk5MTU@._V1_FMjpg_UX1000_.jpg",
             title = "Scream VI",
             releaseDate = "2023",
             genres = listOf("Horror", "Thriller"),

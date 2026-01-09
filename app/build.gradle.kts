@@ -45,10 +45,12 @@ android {
 
 dependencies {
     implementation(project(":core:designsystem"))
+    implementation(project(":core:ui"))
+
     implementation(project(":core:network"))
     implementation(project(":core:model"))
-    implementation(project(":core:ui"))
     implementation(project(":data"))
+    implementation(project(":feature:movie"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
