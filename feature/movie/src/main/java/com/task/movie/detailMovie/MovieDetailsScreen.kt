@@ -12,11 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.task.designsystem.component.SimpleLoadingIndicator
 import androidx.compose.ui.unit.dp
-
+import com.task.movie.R
 import com.task.ui.cards.MovieDetailCard
 
 @Composable
@@ -50,7 +51,7 @@ fun MovieDetailsScreen(
                     rating = state.movie.voteAverage.toFloat(),
                     voteCount = state.movie.voteCount,
                     genres = genreNames,
-                    onCardClick = {} // або {}
+                    onCardClick = {}
 
                 )
                 IconButton(
@@ -64,7 +65,7 @@ fun MovieDetailsScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back",
+                        contentDescription = stringResource(R.string.back),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -74,7 +75,7 @@ fun MovieDetailsScreen(
             is MovieDetailsUiState.Error -> {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
-                    text = state.message ?: "Unknown error"
+                    text = state.message ?: stringResource(R.string.error)
                 )
             }
         }

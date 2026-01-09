@@ -7,11 +7,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.task.designsystem.component.SimpleLoadingIndicator
+import com.task.designsystem.constants.Paddings.MEDIUM_PADDING
+import com.task.designsystem.constants.Paddings.XX_LARGE_PADDING
+import com.task.designsystem.constants.Paddings.X_LARGE_PADDING
 import com.task.ui.cards.MovieCard
+import com.task.movie.R
 
 @Composable
 fun MoviesScreen(
@@ -30,20 +34,20 @@ fun MoviesScreen(
                 Column(
                     Modifier
                         .fillMaxSize()
-                        .padding(32.dp)
+                        .padding(XX_LARGE_PADDING)
                 ) {
                     MoviesSection(
-                        title = "Trending",
+                        title = stringResource(R.string.movie_section_trending),
                         movies = state.trending,
                         onMovieClick = onMovieClick,
                         onSeeAllClick = { onSeeAllClick(MovieListType.TRENDING) },
                         loadNextPage = { viewModel.loadNextPage(MovieListType.TRENDING) }
                     )
 
-                    Spacer(Modifier.height(24.dp))
+                    Spacer(Modifier.height(X_LARGE_PADDING))
 
                     MoviesSection(
-                        title = "Popular",
+                        title = stringResource(R.string.movie_section_popular),
                         movies = state.popular,
                         onMovieClick = onMovieClick,
                         onSeeAllClick = { onSeeAllClick(MovieListType.POPULAR) },
@@ -58,7 +62,7 @@ fun MoviesScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = androidx.compose.ui.Alignment.Center
                 ) {
-                    Text(text = state.message ?: "Unknown error")
+                    Text(text = state.message ?: stringResource(R.string.error))
                 }
             }
         }
@@ -79,10 +83,10 @@ fun MoviesSection(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(title)
-            TextButton(onClick = onSeeAllClick) { Text("See all") }
+            TextButton(onClick = onSeeAllClick) { Text(stringResource(R.string.see_all_btn)) }
         }
 
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(MEDIUM_PADDING)) {
             items(movies) { movie ->
                 MovieCard(
                     posterPath = movie.posterPath.orEmpty(),

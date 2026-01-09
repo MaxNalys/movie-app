@@ -20,6 +20,8 @@ data class MovieDto(
     @SerialName("genre_ids")
     val genreIds: List<Int> = emptyList(),
 
+    val genres: List<GenreDto> = emptyList(),
+
     val popularity: Double,
 
     @SerialName("release_date")

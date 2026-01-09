@@ -16,43 +16,38 @@ class MovieDetailsViewModel @Inject constructor(
     private val _movieId = MutableStateFlow<Int?>(null)
     private val _event = MutableSharedFlow<MovieDetailsEvent>()
     val event: SharedFlow<MovieDetailsEvent> = _event.asSharedFlow()
-    val uiState: StateFlow<MovieDetailsUiState> =
-        _movieId
-            .filterNotNull()
-            .flatMapLatest { movieId ->
-                flow {
-                    emit(MovieDetailsUiState.Loading)
 
-                    val movie = repository.getMovieDetails(movieId)
+    val uiState: StateFlow<MovieDetailsUiState> = _movieId
+        .filterNotNull()
+        .flatMapLatest { movieId ->
+            flow {
+                emit(MovieDetailsUiState.Loading)
 
-                    val genres = repository.getGenres()
-                        .filter { movie.genreIds.contains(it.id) }
+                val allGenres = repository.getGenres()
 
-                    emit(
-                        MovieDetailsUiState.Success(
-                            movie = movie,
-                            genres = genres
-                        )
-                    )
-                }.catch { e ->
-                    emit(MovieDetailsUiState.Error(e.message))
-                }
+                val movie = repository.getMovieDetails(movieId)
+
+                val movieGenres = allGenres.filter { genre -> movie.genreIds.contains(genre.id) }
+
+                emit(MovieDetailsUiState.Success(movie, movieGenres))
+            }.catch { e ->
+                emit(MovieDetailsUiState.Error(e.message))
             }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = MovieDetailsUiState.Loading
-            )
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = MovieDetailsUiState.Loading
+        )
 
     fun load(movieId: Int) {
         _movieId.value = movieId
     }
+
     fun onEvent(event: MovieDetailsEvent) {
         when (event) {
-            MovieDetailsEvent.OnBackClick -> {
-                viewModelScope.launch {
-                    _event.emit(MovieDetailsEvent.OnBackClick)
-                }
+            MovieDetailsEvent.OnBackClick -> viewModelScope.launch {
+                _event.emit(MovieDetailsEvent.OnBackClick)
             }
         }
     }

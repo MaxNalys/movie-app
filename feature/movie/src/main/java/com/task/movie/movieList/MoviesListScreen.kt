@@ -10,12 +10,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.task.designsystem.component.SimpleLoadingIndicator
+import com.task.designsystem.constants.Paddings.LARGE_PADDING
 import com.task.ui.cards.MovieCard
+import com.task.movie.R
+
 
 @Composable
 fun MoviesListScreen(
@@ -29,17 +33,16 @@ fun MoviesListScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
 
-        // ⬅️ BACK BUTTON (завжди зверху)
         IconButton(
             onClick = onBack,
             modifier = Modifier
-                .padding(16.dp)
+                .padding(LARGE_PADDING)
                 .align(Alignment.TopStart)
                 .zIndex(1f)
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.back),
                 tint = MaterialTheme.colorScheme.onSurface
 
             )
@@ -56,7 +59,6 @@ fun MoviesListScreen(
                 val movies =
                     if (type == MovieListType.TRENDING) state.trending else state.popular
 
-                // 🔥 Пагінація
                 LaunchedEffect(listState) {
                     snapshotFlow {
                         listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
@@ -70,10 +72,10 @@ fun MoviesListScreen(
                 LazyColumn(
                     state = listState,
                     contentPadding = PaddingValues(
-                        top = 100.dp, // ⬅️ щоб список не заліз під кнопку
-                        start = 16.dp,
-                        end = 16.dp,
-                        bottom = 16.dp
+                        top = 100.dp,
+                        start = LARGE_PADDING,
+                        end = LARGE_PADDING,
+                        bottom = LARGE_PADDING
                     ),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
@@ -96,7 +98,7 @@ fun MoviesListScreen(
                     }
 
                     item {
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(LARGE_PADDING))
                         SimpleLoadingIndicator(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -112,7 +114,7 @@ fun MoviesListScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = state.message ?: "Unknown error")
+                    Text(text = state.message ?: stringResource(R.string.error))
                 }
             }
         }

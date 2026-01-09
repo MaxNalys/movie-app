@@ -33,6 +33,4 @@ class MainViewModel @Inject constructor(
             }
         }
     }
-
-    fun getMovieById(id: Int): Movie? = _movies.value.find { it.id == id }
 }
